@@ -1,9 +1,26 @@
-import "./style.css";
+import "./style/style.css";
 
 function App() {
   return (
     <div className="App">
-      <h1></h1>
+      <div className="weather-widget">
+        <div className="search-bar">
+          <input type="text" placeholder="Search for a city" />
+          <button>Submit</button>
+        </div>
+        <div className="weather-cards">
+          <div className="weather-card">
+            <h2>Paris</h2>
+            <p>9°C</p>
+            <div className="weather-icon">🌧️</div>
+          </div>
+          <div className="weather-card">
+            <h2>Katowice</h2>
+            <p>5°C</p>
+            <div className="weather-icon">☀️</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
