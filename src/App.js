@@ -1,20 +1,53 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import sun from "./img/sun.svg";
+import cloud from "./img/cloud.svg";
+import rain from "./img/rain.svg";
+import cloud_sun from "./img/cloud-sun.svg";
+import thunder from "./img/thunderstorm.svg";
+import snow from "./img/snow.svg";
 import "./style/style.css";
 
 function App() {
   const API_KEY = "280d907cafe3e263b96e3b945a9562cc";
+  const [weatherData, setWeatherData] = useState(false);
+
+  const allIcons = {
+    "01d": sun,
+    "01n": sun,
+    "02d": cloud_sun,
+    "02n": cloud_sun,
+    "03d": cloud,
+    "03n": cloud,
+    "04d": cloud,
+    "04n": cloud,
+    "09d": rain,
+    "09n": rain,
+    "10d": rain,
+    "10n": rain,
+    "11d": thunder,
+    "11n": thunder,
+    "13d": snow,
+    "13n": snow,
+  };
+
   const search = async (city) => {
     try {
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
 
       const response = await fetch(url);
       const data = await response.json();
+      const icon = allIcons[data.weather[0].icon] || sun;
       console.log(data);
+      setWeatherData({
+        temperature: data.main.temp,
+        location: data.name,
+        icon: icon,
+      });
     } catch (error) {}
   };
 
   useEffect(() => {
-    search("LONDON");
+    search("katowice");
   }, []);
 
   return (
@@ -28,12 +61,16 @@ function App() {
           <div className="weather-card">
             <h2>Paris</h2>
             <p>9°C</p>
-            <div className="weather-icon">🌧️</div>
+            <div className="weather-icon">
+              <img src={sun} alt="weather" />
+            </div>
           </div>
           <div className="weather-card">
             <h2>Katowice</h2>
             <p>5°C</p>
-            <div className="weather-icon">☀️</div>
+            <div className="weather-icon">
+              <img src={rain} alt="weather" />
+            </div>
           </div>
         </div>
       </div>

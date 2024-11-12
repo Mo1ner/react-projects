@@ -73,9 +73,13 @@ body {
 
 .weather-card p {
   font-size: 40px;
-  margin-bottom: 8px;
+  margin-bottom: 35px;
 }
 
 .weather-icon {
   font-size: 24px;
+}
+
+.weather-icon img {
+  width: 32px;
 }
