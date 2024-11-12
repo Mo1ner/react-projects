@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import sun from "./img/sun.svg";
 import cloud from "./img/cloud.svg";
 import rain from "./img/rain.svg";
@@ -9,7 +9,9 @@ import "./style/style.css";
 
 function App() {
   const API_KEY = "280d907cafe3e263b96e3b945a9562cc";
+
   const [weatherData, setWeatherData] = useState(false);
+  const inputRef = useRef();
 
   const allIcons = {
     "01d": sun,
@@ -31,48 +33,57 @@ function App() {
   };
 
   const search = async (city) => {
+    if (city === "") {
+      alert("Enter name");
+      return;
+    }
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
 
       const response = await fetch(url);
       const data = await response.json();
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
       const icon = allIcons[data.weather[0].icon] || sun;
-      console.log(data);
       setWeatherData({
-        temperature: data.main.temp,
+        temperature: Math.floor(data.main.temp),
         location: data.name,
         icon: icon,
       });
-    } catch (error) {}
+    } catch (error) {
+      setWeatherData(false);
+      console.error("There is some Error");
+    }
   };
 
   useEffect(() => {
-    search("katowice");
+    search("Мадрид");
   }, []);
 
   return (
     <div className="App">
       <div className="weather-widget">
         <div className="search-bar">
-          <input type="text" placeholder="Search for a city" />
-          <button>Submit</button>
+          <input ref={inputRef} type="text" placeholder="Search for a city" />
+          <button onClick={() => search(inputRef.current.value)}>Submit</button>
         </div>
-        <div className="weather-cards">
-          <div className="weather-card">
-            <h2>Paris</h2>
-            <p>9°C</p>
-            <div className="weather-icon">
-              <img src={sun} alt="weather" />
+        {weatherData ? (
+          <>
+            <div className="weather-cards">
+              <div className="weather-card">
+                <h2>{weatherData.location}</h2>
+                <p>{weatherData.temperature}°C</p>
+                <div className="weather-icon">
+                  <img src={weatherData.icon} alt="weather" />
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="weather-card">
-            <h2>Katowice</h2>
-            <p>5°C</p>
-            <div className="weather-icon">
-              <img src={rain} alt="weather" />
-            </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
