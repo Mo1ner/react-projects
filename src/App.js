@@ -10,7 +10,7 @@ import "./style/style.css";
 function App() {
   const API_KEY = "280d907cafe3e263b96e3b945a9562cc";
 
-  const [weatherData, setWeatherData] = useState(false);
+  const [weatherData, setWeatherData] = useState([]);
   const inputRef = useRef();
 
   const allIcons = {
@@ -37,6 +37,11 @@ function App() {
       alert("Enter name");
       return;
     }
+
+    if (weatherData.length >= 4) {
+      alert("Delete some city to add another one");
+      return;
+    }
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
 
@@ -47,11 +52,13 @@ function App() {
         return;
       }
       const icon = allIcons[data.weather[0].icon] || sun;
-      setWeatherData({
+      const newWeatherData = {
         temperature: Math.floor(data.main.temp),
         location: data.name,
         icon: icon,
-      });
+      };
+
+      setWeatherData((prevWeatherData) => [...prevWeatherData, newWeatherData]);
     } catch (error) {
       setWeatherData(false);
       console.error("There is some Error");
@@ -59,7 +66,7 @@ function App() {
   };
 
   useEffect(() => {
-    search("Мадрид");
+    search("New York");
   }, []);
 
   return (
@@ -70,17 +77,19 @@ function App() {
           <button onClick={() => search(inputRef.current.value)}>Submit</button>
         </div>
         {weatherData ? (
-          <>
-            <div className="weather-cards">
-              <div className="weather-card">
-                <h2>{weatherData.location}</h2>
-                <p>{weatherData.temperature}°C</p>
-                <div className="weather-icon">
-                  <img src={weatherData.icon} alt="weather" />
+          <div className="weather-cards">
+            {weatherData.map((data, index) => (
+              <>
+                <div className="weather-card" key={index}>
+                  <h2>{data.location}</h2>
+                  <p>{data.temperature}°C</p>
+                  <div className="weather-icon">
+                    <img src={data.icon} alt="weather" />
+                  </div>
                 </div>
-              </div>
-            </div>
-          </>
+              </>
+            ))}
+          </div>
         ) : (
           <></>
         )}
