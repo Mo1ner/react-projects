@@ -5,6 +5,7 @@ import rain from "./img/rain.svg";
 import cloud_sun from "./img/cloud-sun.svg";
 import thunder from "./img/thunderstorm.svg";
 import snow from "./img/snow.svg";
+import cross from "./img/cross.svg";
 import "./style/style.css";
 
 function App() {
@@ -65,6 +66,20 @@ function App() {
     }
   };
 
+  const remove = (cityName) => {
+    setWeatherData((prevWeatherData) => {
+      const index = prevWeatherData.findIndex(
+        (data) => data.location === cityName
+      );
+
+      if (index !== -1) {
+        const updatedWeatherData = [...prevWeatherData];
+        updatedWeatherData.splice(index, 1);
+        return updatedWeatherData;
+      }
+    });
+  };
+
   useEffect(() => {
     search("New York");
   }, []);
@@ -81,6 +96,12 @@ function App() {
             {weatherData.map((data, index) => (
               <>
                 <div className="weather-card" key={index}>
+                  <img
+                    onClick={() => remove(data.location)}
+                    src={cross}
+                    className="cross-img"
+                    alt="cross"
+                  />
                   <h2>{data.location}</h2>
                   <p>{data.temperature}°C</p>
                   <div className="weather-icon">
